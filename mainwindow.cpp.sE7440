@@ -1,0 +1,85 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "QMessageBox"
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    // Инициализация
+    ui->lblScore->hide();
+    ui->scoreValue->hide();
+    ui->lblMove->hide();
+    ui->moveValue->hide();
+
+
+    // Генерация пустых значений для gameGrid
+    for (int x=0; x<4; x++)
+           for (int y = 0; y<4; y++)
+                   ui->gameGrid->setItem(x, y, new QTableWidgetItem(""));
+
+
+    // Автоматическая ширина и высота ячеек
+    ui->gameGrid->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->gameGrid->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+
+    // Связь сигналов и слотов
+    connect(ui->actionAbout, SIGNAL(triggered(bool)), this, SLOT(About())); // Окно about
+    connect(ui->actionNew_game, SIGNAL(triggered(bool)), this, SLOT(NewGame()));
+    connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(Exit()));
+
+ }
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+// Кнопка обо мне
+void MainWindow::About(){
+    QMessageBox::information(this,"About","Game 2048\n"
+                                         "By Pototskiy Vlad\n"
+                                         "pototskiyvl@gmail.com\n\n"
+                                         "Version 0.1 (09/19/2016)");
+}
+
+// Кнопка выхода
+void MainWindow::Exit(){
+    QApplication::quit();
+}
+
+
+// Кнопка новой игры
+void MainWindow::NewGame(){
+    // Инициализация
+    ui->scoreValue->setText(QString("0"));
+    ui->moveValue->setText(QString("0"));
+
+    ui->lblScore->show();
+    ui->scoreValue->show();
+    ui->lblMove->show();
+    ui->moveValue->show();
+
+    for (int x=0; x<4; x++)
+           for (int y = 0; y<4; y++)
+               if (qrand()%5==0)
+                   ui->gameGrid->item(x, y)->setData(Qt::DisplayRole, QVariant("2"));
+               else if (qrand()%10==0)
+                   ui->gameGrid->item(x, y)->setData(Qt::DisplayRole, QVariant("4"));
+               else
+                   ui->gameGrid->item(x, y)->setData(Qt::DisplayRole, QVariant(" "));
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *e){
+    if(e->type() == QEvent::KeyPress){
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
+        std::cout << event->key() << "\n";
+
+        return true;
+    }
+    return false;
+}
+
