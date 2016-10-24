@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->scoreValue->hide();
     ui->lblMove->hide();
     ui->moveValue->hide();
-
+    setGameStatus(false);
 
     MainWindow::setWinner(false);
 
